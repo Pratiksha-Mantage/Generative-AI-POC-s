@@ -1,0 +1,21 @@
+import pandas as pd
+from pandasai import SmartDataframe
+
+llm = Ollama(base_url="",model="llama3:8b")
+# llm = GoogleGenerativeAI(model="gemini-pro", google_api_key="")
+st.title("Data Analysis with PandasAI")
+
+uploader_file = st.file_uploader("Upload a CSV file")
+
+if uploader_file is not None:
+    data = pd.read_excel(uploader_file)
+    st.write(data.head(3))
+    df = SmartDataframe(data, config={"llm": llm})
+    prompt = st.text_area("Enter your prompt:")
+
+    if st.button("Generate"):
+        if prompt:
+            with st.spinner("Generating response..."):
+                st.write(df.chat(prompt))
+        else:
+            st.warning("Please enter a prompt!")
